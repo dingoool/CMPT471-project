@@ -1,0 +1,6 @@
+port,content_dir,strategy,total_req,manifest_req,segment_req,other_req
+8002,content/server2,latency,317,9,0,308
+8002,content/server2,latency,161,7,0,154
+8002,content/server2,latency,239,8,0,231
+8002,content/server2,latency,239,8,0,231
+8002,content/server2,latency,395,10,0,385

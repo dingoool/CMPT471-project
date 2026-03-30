@@ -1,0 +1,2 @@
+port,content_dir,total_req,manifest_req,segment_req,other_req
+8002,content/server2,7,7,0,0

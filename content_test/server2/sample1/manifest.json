@@ -1,0 +1,9 @@
+{
+  "content": "sample1",
+  "num_segments": 3,
+  "segments": [
+    "segment1.txt",
+    "segment2.txt",
+    "segment3.txt"
+  ]
+}
