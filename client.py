@@ -42,42 +42,25 @@ def fetch_manifest(content_server, content_name, retries=0):
         return fetch_manifest(new_server, content_name, retries + 1)
     
 
-# def fetch_seg(seg, server, content_name, retries=0):
-#     if retries >= MAX_SEG_RETRIES:
-#         print(f"Max retries attempted for {seg}, returning None")
-#         return None
-#     try:
-#         url = f'{server}/{content_name}/{seg}'
-#         with urllib.request.urlopen(url, timeout=5) as r:
-#             """
-#             for text, add .decocde()
-#             """
-#             content = r.read()
-#         return content, server # returns the segment, server in case it changed midway 
-#     except (urllib.error.URLError, http.client.IncompleteRead, ConnectionResetError, TimeoutError, OSError) as e:
-#         # server down before or during transfer
-#         msg = getattr(e, "reason", str(e))
-#         print(f"Content Server {server} failed ({msg}), retry with new server")
-#         server = get_server()
-#         return fetch_seg(seg, server, content_name, retries + 1)
-def fetch_seg(seg, server, content_name):
-    attempt = 0
-    while attempt < MAX_SEG_RETRIES:
-        try:
-            url = f'{server}/{content_name}/{seg}'
-            with urllib.request.urlopen(url, timeout=5) as r:
-                """
-                for text, add .decocde()
-                """
-                content = r.read()
-            return content, server # returns the segment, server in case it changed midway 
-        except (urllib.error.URLError, http.client.IncompleteRead, ConnectionResetError, TimeoutError, OSError) as e:
-            # server down before or during transfer
-            msg = getattr(e, "reason", str(e))
-            print(f"Content Server {server} failed ({msg}), retry with new server")
-            server = get_server()
-            attempt +=1
-    return None
+def fetch_seg(seg, server, content_name, retries=0):
+    if retries >= MAX_SEG_RETRIES:
+        print(f"Max retries attempted for {seg}, returning None")
+        return None
+    try:
+        url = f'{server}/{content_name}/{seg}'
+        with urllib.request.urlopen(url, timeout=5) as r:
+            """
+            for text, add .decocde()
+            """
+            content = r.read()
+        return content, server # returns the segment, server in case it changed midway 
+    except (urllib.error.URLError, http.client.IncompleteRead, ConnectionResetError, TimeoutError, OSError) as e:
+        # server down before or during transfer
+        msg = getattr(e, "reason", str(e))
+        print(f"Content Server {server} failed ({msg}), retry with new server")
+        server = get_server()
+        return fetch_seg(seg, server, content_name, retries + 1)
+    
 
 def write_results(init_server, final_server, time_server, time_download, total_segments):
     os.makedirs("results", exist_ok=True)
