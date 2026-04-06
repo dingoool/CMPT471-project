@@ -1,7 +1,7 @@
 #!/bin/bash
 
 NUM_SERVERS=2
-NUM_TRIALS=5
+NUM_TRIALS=10
 STRATEGIES=("latency" "latency-load")
 
 mkdir -p logs results

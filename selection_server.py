@@ -7,7 +7,8 @@
 import sys
 import os
 import csv
-from http.server import HTTPServer, BaseHTTPRequestHandler
+import threading
+from http.server import ThreadingHTTPServer, BaseHTTPRequestHandler
 import urllib.request
 import json
 import time
@@ -16,6 +17,8 @@ from enum import Enum
 class Strategy(Enum):
     LATENCY = "latency"
     LATENCY_LOAD = "latency-load"
+
+OUTPUT_LOCK = threading.Lock()
 
 def parse_args():
     if len(sys.argv) < 4 or len(sys.argv) > 5:
@@ -91,8 +94,6 @@ def select_best_server():
     return best_server, latencies, loads
 
 def write_result(best_server, latencies, loads):
-    file_exists = os.path.exists(RESULT_FILE)
-
     row = { 
         "strategy": STRATEGY.value,
         "chosen_server": best_server 
@@ -106,13 +107,15 @@ def write_result(best_server, latencies, loads):
         port = server.split(":")[-1]
         row[f"load_{port}"] = load
 
-    with open(RESULT_FILE, "a", newline="") as f:
-        writer = csv.DictWriter(f, fieldnames=row.keys())
+    with OUTPUT_LOCK:
+        file_exists = os.path.exists(RESULT_FILE)
+        with open(RESULT_FILE, "a", newline="") as f:
+            writer = csv.DictWriter(f, fieldnames=row.keys())
 
-        if not file_exists:
-            writer.writeheader()
-        
-        writer.writerow(row)
+            if not file_exists:
+                writer.writeheader()
+            
+            writer.writerow(row)
 
 class SelectionHandler(BaseHTTPRequestHandler):
     def do_GET(self):
@@ -134,11 +137,9 @@ class SelectionHandler(BaseHTTPRequestHandler):
         self.end_headers() # Done sending header
         self.wfile.write(json.dumps(response).encode()) # python dict -> JSON string -> bytes
 
-        
-
 def run():
-    server = HTTPServer(("localhost", 8000), SelectionHandler)
-    print("Selection server running...")
+    server = ThreadingHTTPServer(("localhost", 8000), SelectionHandler)
+    print("Threaded Selection server running...")
     server.serve_forever()
 
 

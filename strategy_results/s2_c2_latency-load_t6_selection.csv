@@ -1,0 +1,3 @@
+strategy,chosen_server,lat_8001,lat_8002,load_8001,load_8002
+latency-load,http://localhost:8002,0.0061847920005675405,0.003903542001353344,0,0
+latency-load,http://localhost:8002,0.006274375002249144,0.003973082999436883,0,0

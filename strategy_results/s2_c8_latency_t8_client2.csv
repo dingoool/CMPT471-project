@@ -1,0 +1,2 @@
+strategy,client_id,num_servers,num_clients,initial_server,final_server,time_server,time_download,total_segments
+latency,2,2,8,http://localhost:8002,http://localhost:8002,0.019655416999739828,0.8244837499987625,77
