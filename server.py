@@ -73,7 +73,7 @@ class MyHandler(SimpleHTTPRequestHandler):
                     stats["other_req"] += 1
 
                 stats["total_req"] += 1
-                write_results()   
+                #write_results()   
         
     
 def write_results():
@@ -109,7 +109,7 @@ ThreadingHTTPServer.allow_reuse_address = True # for reconnecting after failures
 server = ThreadingHTTPServer(("localhost", PORT), MyHandler)
 
 def shutdown_handler(signum, frame):
-    print(f"[Server {PORT}] Shutdown signal received")
+    print(f"[Server {PORT}] Shutdown signal received", flush=True)
     write_results()
     print(f"[SERVER {PORT}] WRITE DONE", flush=True)
 
@@ -119,5 +119,5 @@ def shutdown_handler(signum, frame):
 signal.signal(signal.SIGTERM, shutdown_handler)
 signal.signal(signal.SIGINT, shutdown_handler)
 
-print(f"Servering {CONTENT_DIR} on port {PORT}")
+print(f"Servering {CONTENT_DIR} on port {PORT}", flush=True)
 server.serve_forever()
