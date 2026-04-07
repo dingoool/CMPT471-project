@@ -3,7 +3,11 @@ from pathlib import Path
 import pandas as pd
 import matplotlib.pyplot as plt
 
-RESULTS_DIR = Path("results/normal")
+BASE_DIR = Path(__file__).resolve().parent.parent
+RESULTS_DIR = BASE_DIR/"results/normal"
+PLOTS_DIR = BASE_DIR/ "plots"
+PLOTS_DIR.mkdir(exist_ok=True)
+OUT_FILE = PLOTS_DIR/"client_getServer_download_analysis.png"
 
 # Parse Strategy results
 def parse_result_filename(filename):
@@ -255,7 +259,7 @@ def main():
             'std',
             'Average download time (s)',
             'Average Download Time vs Number of Clients (with error)',
-            'avg_download_error.png'
+            PLOTS_DIR/'avg_download_error.png'
         )
         
         # plot average time to download
@@ -266,7 +270,7 @@ def main():
             "time_download",
             "Average download time (s)",
             "Average Download Time vs Number of Clients",
-            "avg_download_strategy.png"
+            PLOTS_DIR/"avg_download_strategy.png"
         )
 
         # plot average time to get server
@@ -276,7 +280,7 @@ def main():
             "time_server",
             "Average time to get server (s)",
             "Average Time to Get Server vs Number of Clients",
-            "avg_server_strategy.png"
+            PLOTS_DIR/"avg_server_strategy.png"
         )
 
         # plot download improvement
@@ -289,7 +293,7 @@ def main():
 
         plot_improvement(
             improve_download_df,
-            "download_improvement.png",
+            PLOTS_DIR/"download_improvement.png",
             "Download Time Improvement of Load-Aware Strategy Over Latency-Only"
         )
 
@@ -300,7 +304,7 @@ def main():
         improve_stats = compute_improvement_stats(improve_df)
         plot_improvement_with_error(
             improve_stats,
-            "download_improvement_error.png",
+            PLOTS_DIR/"download_improvement_error.png",
             "Download Improvement with Variability"
         )
 

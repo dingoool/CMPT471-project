@@ -63,9 +63,10 @@ def fetch_seg(seg, server, content_name, retries=0):
     
 
 def write_results(init_server, final_server, time_server, time_download, total_segments):
-    os.makedirs("results", exist_ok=True)
+    results_dir = os.path.join(BASE_DIR, "results")
+    os.makedirs(results_dir, exist_ok=True)
 
-    result_file = f"results/s{NUM_SERVERS}_c{NUM_CLIENTS}_{STRATEGY}_t{TRIAL}_client{CLIENT_ID}.csv"
+    result_file = os.path.join(results_dir, f"s{NUM_SERVERS}_c{NUM_CLIENTS}_{STRATEGY}_t{TRIAL}_client{CLIENT_ID}.csv")
     file_exists = os.path.exists(result_file)
 
     with open(result_file, "a", newline="") as f:
@@ -142,8 +143,8 @@ def client_runner():
         )
 
 if __name__ == "__main__":
-    if len(sys.argv) < 5 or len(sys.argv) > 6:
-        print("Usage: python3 client.py <num_servers> <num_clients> <client_id> <strategy> [trial]")
+    if len(sys.argv) < 5 or len(sys.argv) > 7:
+        print("Usage: python3 client.py <num_servers> <num_clients> <client_id> <strategy> [trial] [base_dir]")
         sys.exit(1)
 
     NUM_SERVERS = int(sys.argv[1])
@@ -156,5 +157,16 @@ if __name__ == "__main__":
         TRIAL = int(sys.argv[5])
     else:
         TRIAL = 1
+        BASE_DIR = os.getcwd()
+    
+    # optional parsing
+    if len(sys.argv) >= 6:
+        if sys.argv[5].isdigit():
+            TRIAL = int(sys.argv[5])
+        else:
+            BASE_DIR = sys.argv[5]
+
+    if len(sys.argv) == 7:
+        BASE_DIR = sys.argv[6]
 
     client_runner()

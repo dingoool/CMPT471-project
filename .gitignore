@@ -1,5 +1,5 @@
 mv.mp4
-content/
-logs/
-results/
-graphs/
+content/*
+plots/*
+results/*
+logs/*

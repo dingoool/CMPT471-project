@@ -21,8 +21,8 @@ class Strategy(Enum):
 OUTPUT_LOCK = threading.Lock()
 
 def parse_args():
-    if len(sys.argv) < 4 or len(sys.argv) > 5:
-        print("Usage: python3 selection_server.py <num_servers> <num_clients> <strategy> [trial]")
+    if len(sys.argv) < 4 or len(sys.argv) > 6:
+        print("Usage: python3 selection_server.py <num_servers> <num_clients> <strategy> [trial] [base_dir]")
         print("Strategies: latency | latency-load")
         sys.exit(1)
     
@@ -33,6 +33,17 @@ def parse_args():
             trial = int(sys.argv[4])
         else:
             trial = 1
+            base_dir = os.getcwd()
+        
+        if len(sys.argv) >= 5:
+            if sys.argv[4].isdigit(): # trial
+                trial = int(sys.argv[4])
+            else:
+                base_dir = sys.argv[4] 
+        
+        if len(sys.argv) == 6:
+            base_dir = sys.argv[5]
+    
             
     except ValueError:
         print("num_servers and num_clients and trial must be integers")
@@ -44,7 +55,7 @@ def parse_args():
         print("Invalid strategy. Usage: latency or latency-load")
         sys.exit(1)
     
-    return num_servers, num_clients, strategy, trial
+    return num_servers, num_clients, strategy, trial, base_dir
 
 def get_latency(server):
     # Measure latency
@@ -144,7 +155,7 @@ def run():
 
 
 if __name__ == "__main__":
-    NUM_SERVERS, NUM_CLIENTS, STRATEGY, TRIAL = parse_args()
+    NUM_SERVERS, NUM_CLIENTS, STRATEGY, TRIAL, BASE_DIR = parse_args()
 
     # List of available content servers
     SERVERS = []
@@ -153,7 +164,8 @@ if __name__ == "__main__":
         SERVERS.append(f"http://localhost:{PORT}")
 
     CONTENT_NAME = "sample1"
-    RESULT_FILE = f"results/s{NUM_SERVERS}_c{NUM_CLIENTS}_{STRATEGY.value}_t{TRIAL}_selection.csv"
-    os.makedirs("results", exist_ok=True)
+    RESULTS_DIR = os.path.join(BASE_DIR, "results")
+    os.makedirs(RESULTS_DIR, exist_ok=True)
+    RESULT_FILE = os.path.join(RESULTS_DIR, f"s{NUM_SERVERS}_c{NUM_CLIENTS}_{STRATEGY.value}_t{TRIAL}_selection.csv")
     
     run()

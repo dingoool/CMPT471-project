@@ -4,8 +4,11 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 
-RESULTS_DIR = Path("results/failure")
-OUT_FILE = "server_failure_plots.png"
+BASE_DIR = Path(__file__).resolve().parent.parent
+RESULTS_DIR = BASE_DIR/"results/failure"
+PLOTS_DIR = BASE_DIR/ "plots"
+PLOTS_DIR.mkdir(exist_ok=True)
+OUT_FILE = PLOTS_DIR/"server_failure_plots.png"
 STRATEGIES = ["latency", "latency-load"]
 
 # Parse folder names

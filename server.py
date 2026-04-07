@@ -27,8 +27,9 @@ if len(sys.argv) == 7:
 else:
     TRIAL = 1
     
-BASE_DIR = os.getcwd()
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 RESULTS_DIR = os.path.join(BASE_DIR, "results")
+RESULTS_DIR = os.path.abspath(RESULTS_DIR)
 
 stats = {
     "total_req": 0,
@@ -38,11 +39,13 @@ stats = {
 }
 
 # Change directory to serve files
-os.chdir(CONTENT_DIR) 
+#os.chdir(CONTENT_DIR) 
 
 current_requests = 0
 
 class MyHandler(SimpleHTTPRequestHandler):
+    def translate_path(self, path):
+        return os.path.join(CONTENT_DIR, path.lstrip("/"))
     def do_GET(self):
         global current_requests
         # Send server_load to selection server
