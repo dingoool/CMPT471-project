@@ -3,7 +3,7 @@ from pathlib import Path
 import pandas as pd
 import matplotlib.pyplot as plt
 
-RESULTS_DIR = Path("strategy_results")
+RESULTS_DIR = Path("results/normal")
 
 # Parse Strategy results
 def parse_result_filename(filename):

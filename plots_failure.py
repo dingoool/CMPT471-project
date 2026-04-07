@@ -4,7 +4,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 
-RESULTS_DIR = Path("results_failure")
+RESULTS_DIR = Path("results/failure")
 OUT_FILE = "server_failure_plots.png"
 STRATEGIES = ["latency", "latency-load"]
 
@@ -21,10 +21,10 @@ def parse_filename(filename):
         trial_m = re.search(r"_t(\d+)_", filename)
         trial = int(trial_m.group(1)) if trial_m else None
 
-        client_m = re.search(r"client(\d+)", filename)
+        client_m = re.search(r"client(\d+)\.csv$", filename)
         client_id = int(client_m.group(1)) if client_m else None
 
-        server_m = re.search(r"server(\d+)", filename)
+        server_m = re.search(r"server(\d+)\.csv$", filename)
         server_id = int(server_m.group(1)) if server_m else None 
     except Exception as e:
         print("Parse error for:", filename, e)
