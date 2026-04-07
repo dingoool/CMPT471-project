@@ -1,2 +1,0 @@
-client_id,num_servers,num_clients,initial_server,final_server,time_server,time_download,total_segments
-1,1,5,http://localhost:8001,http://localhost:8001,0.021972197999275522,0.02395927500037942,3
