@@ -1,4 +1,8 @@
 mv.mp4
 content/
 logs/
-
+results/
+logs_failure/
+results_failure/
+strategy_results/
+graphs/

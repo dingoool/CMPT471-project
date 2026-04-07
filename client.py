@@ -6,6 +6,7 @@
 
 import urllib.request
 import urllib.error
+import http.client
 import json
 import time
 import sys
@@ -15,6 +16,7 @@ import csv
 SOURCE_SELECTOR = "http://localhost:8000"
 CONTENT_NAME = "sample1"
 MAX_RETRIES = 3 # if server goes down mid way (for redirection logic)
+MAX_SEG_RETRIES = 7
 
 def get_server():
     # request for best server from source selection server
@@ -28,7 +30,7 @@ def fetch_manifest(content_server, content_name, retries=0):
     # request manifest from recommended content server
     if retries >= MAX_RETRIES:
         print("Could not retrieve manifest from any server")
-        return None
+        return None, None
     try:
         with urllib.request.urlopen(f'{content_server}/{content_name}/manifest.json') as r:
             manifest = json.loads(r.read().decode())
@@ -39,30 +41,26 @@ def fetch_manifest(content_server, content_name, retries=0):
         new_server = get_server()
         return fetch_manifest(new_server, content_name, retries + 1)
     
-    
+
 def fetch_seg(seg, server, content_name, retries=0):
-    if retries >= MAX_RETRIES:
+    if retries >= MAX_SEG_RETRIES:
         print(f"Max retries attempted for {seg}, returning None")
         return None
     try:
         url = f'{server}/{content_name}/{seg}'
-        with urllib.request.urlopen(url) as r:
+        with urllib.request.urlopen(url, timeout=5) as r:
             """
             for text, add .decocde()
             """
             content = r.read()
         return content, server # returns the segment, server in case it changed midway 
-    except urllib.error.URLError as e:
+    except (urllib.error.URLError, http.client.IncompleteRead, ConnectionResetError, TimeoutError, OSError) as e:
         # server down before or during transfer
-        print(f"Content Server {server} failed ({e.reason}), getting new server")
-        new_server = get_server()
-        return fetch_seg(seg, new_server, content_name, retries + 1)
+        msg = getattr(e, "reason", str(e))
+        print(f"Content Server {server} failed ({msg}), retry with new server")
+        server = get_server()
+        return fetch_seg(seg, server, content_name, retries + 1)
     
-    except Exception as e:
-        # if fails mid transfer case
-        print(f"Mid-transfer failure on {seg} ({e}), retrying")
-        new_server = get_server()
-        return fetch_seg(seg, new_server, retries + 1)
 
 def write_results(init_server, final_server, time_server, time_download, total_segments):
     os.makedirs("results", exist_ok=True)
@@ -114,6 +112,7 @@ def client_runner():
     start = time.perf_counter()
     manifest, total = fetch_manifest(server, CONTENT_NAME)
 
+    # currently assuming server won't fail when getting manifest
     if manifest is None:
         print("Could not retrieve manifest, aborting")
         return
@@ -122,11 +121,13 @@ def client_runner():
     success = True
     for i, seg in enumerate(manifest['segments'], start=1):
         print(f"[{i}/{total}] Downloading {seg} from {server}...", flush=True)
-        content, server = fetch_seg(seg, server, CONTENT_NAME)
-        if content is None:
+        result = fetch_seg(seg, server, CONTENT_NAME)
+        if result is None:
             print("Invalid content")
             success = False
-            break
+            continue
+        content, server = result
+        print(f"  -> Content: {content}\n", flush=True)
     
     end = time.perf_counter()
     time_download = end - start # total download time (manifest + segments)
