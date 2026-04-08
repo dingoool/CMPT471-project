@@ -81,7 +81,7 @@ def compute_cost(latency, load):
     if STRATEGY == Strategy.LATENCY:
         return latency
     elif STRATEGY == Strategy.LATENCY_LOAD:
-        return latency + 0.001 * load
+        return latency + 0.005 * load
     
 def select_best_server():
     best_cost = float('inf')

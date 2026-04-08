@@ -42,7 +42,8 @@ for STRATEGY in "${STRATEGIES[@]}"; do
 
     # determine how many clients
     if [ "$MODE" = "normal" ]; then
-        CLIENT_RANGE="1 2 3 4 5 6 7 8 9 10"
+        # CLIENT_RANGE="1 2 3 4 5 6 7 8 9 10"
+        CLIENT_RANGE="2 5 10 20 30"
     else
         CLIENT_RANGE="10" #fixed 10 clients at a time for server fail mode
     fi
