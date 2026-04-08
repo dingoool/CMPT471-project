@@ -24,7 +24,7 @@ From root directory:
 ```
 **Modes:**
    - **normal** 
-      - Varies number of clients from 1–10, 
+      - Varies number of clients (2, 5, 10, 20, 30) 
       - No failures 
       - Compares both strategies
    - **failure** 
