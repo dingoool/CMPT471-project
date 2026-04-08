@@ -128,7 +128,6 @@ def client_runner():
             success = False
             continue
         content, server = result
-        print(f"  -> Content: {content}\n", flush=True)
     
     end = time.perf_counter()
     time_download = end - start # total download time (manifest + segments)

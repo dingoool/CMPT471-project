@@ -10,6 +10,12 @@ if [ "$#" -ne 1 ]; then
   exit 1
 fi
 
+if [ ! -f "$ROOT_DIR/$VIDEO_NAME" ]; then
+  echo "Error: Video file '$VIDEO_NAME' not found in project root."
+  echo "Please place the video at: $ROOT_DIR/$VIDEO_NAME"
+  exit 1
+fi
+
 rm -rf "$ROOT_DIR/content"
 mkdir -p "$ROOT_DIR/content/server1/sample1"
 

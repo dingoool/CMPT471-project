@@ -7,7 +7,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 RESULTS_DIR = BASE_DIR/"results/normal"
 PLOTS_DIR = BASE_DIR/ "plots"
 PLOTS_DIR.mkdir(exist_ok=True)
-OUT_FILE = PLOTS_DIR/"client_getServer_download_analysis.png"
 
 # Parse Strategy results
 def parse_result_filename(filename):
