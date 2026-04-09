@@ -44,3 +44,5 @@ python3 scripts/plots_failure.py
 
 This will read the result files from `results/normal/` and `results/failure/` and generates plots in `plots/`.
 
+*Note: all plots and logs are removed/overwritten each run. Please save any of these to your own system if needed.*
+
